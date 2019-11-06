@@ -17,3 +17,5 @@
 `export PYTHONPATH=$PYTHONPATH:/tf/models/research/:/tf/models/research/slim`
 
 `export PATH=$PATH:~/.local/bin`
+
+`jupyter notebook --ip=0.0.0.0 --allow-root`
