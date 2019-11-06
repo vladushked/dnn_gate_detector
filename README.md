@@ -15,4 +15,5 @@
 `docker run --gpus all -it --rm -v ~/mywork:/tf -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:1.14.0-py3`
 
 `export PYTHONPATH=$PYTHONPATH:/tf/models/research/:/tf/models/research/slim`
+
 `export PATH=$PATH:~/.local/bin`
