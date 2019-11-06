@@ -10,5 +10,5 @@
 
 `docker run -it --rm --name tf -v ~/mywork:/notebooks -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3-jupyter`
 
-`sudo docker run -it --rm -v ~/mywork:/tf -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:1.14.0-py3`
+`docker run -it --rm -v ~/mywork:/tf -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:1.14.0-py3`
 
