@@ -19,3 +19,5 @@
 `export PATH=$PATH:~/.local/bin`
 
 `jupyter notebook --ip=0.0.0.0 --allow-root`
+
+`pip install --ignore-installed --upgrade tensorflow-gpu==1.14` — Release with GPU support (Ubuntu and Windows)
