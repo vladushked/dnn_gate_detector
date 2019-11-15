@@ -1,0 +1,3 @@
+gate
+red_flare
+yellow_flare
