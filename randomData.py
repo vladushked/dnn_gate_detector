@@ -22,17 +22,16 @@ ap.add_argument("-p", "--percentage", type = float, default = 0.2,
 args = vars(ap.parse_args())
 
 # read our args to some constants
-IMAGES = args["images_directory"]
+IMAGES_DIR = args["images_directory"]
 if args["labels_directory"]: 
-	LABELS = args["labels_directory"]
-else: LABELS = args["images_directory"]
+	LABELS_DIR = args["labels_directory"]
+else: LABELS_DIR = args["images_directory"]
 
 print('------------------\n')
 
 # step into directory and take files
-images = [f for f in os.listdir(IMAGES) if (os.path.isfile(os.path.join(IMAGES, f)) and (f.endswith(".jpg") or f.endswith(".png")))]
-labels = [f for f in os.listdir(LABELS) if (os.path.isfile(os.path.join(IMAGES, f)) and (f.endswith(".txt") or f.endswith(".xml")) and (f != 'classes.txt'))]
-images_quantity = len(images)
+images = [f for f in os.listdir(IMAGES_DIR) if (os.path.isfile(os.path.join(IMAGES_DIR, f)) and (f.endswith(".jpg") or f.endswith(".png")))]
+labels = [f for f in os.listdir(LABELS_DIR) if (os.path.isfile(os.path.join(IMAGES_DIR, f)) and (f.endswith(".txt") or f.endswith(".xml")) and (f != 'classes.txt'))]
 
 # make train and eval directories
 DATA_DIR = 'data'
@@ -55,16 +54,13 @@ else:
     os.mkdir(os.path.join(DATA_DIR, EVAL_DIR))
 
 # pick eval images
-# random_counter = [random.randrange(0,images_quantity,1) for i in range(int(images_quantity*args['percentage']))]
-random_counter = []
-for i in range(int(images_quantity*args['percentage'])):
-	r = random.randrange(0,images_quantity,1)
-	for j in range(len(random_counter)):
-		if r == random_counter[j]:
-			
-			break
-	random_counter.append(r)
-print(random_counter)
-print(len(random_counter))
+eval_images_quantity = int(len(images)*args['percentage'])
+random_images = random.sample(images, eval_images_quantity)
+for img in images:
+	if img in random_images:
+		shutil.copyfile(os.path.join(IMAGES_DIR, img), os.path.join(DATA_DIR, EVAL_DIR, img))
+	else:
+		shutil.copyfile(os.path.join(IMAGES_DIR, img), os.path.join(DATA_DIR, TRAIN_DIR, img))
+
 print('\n------------------')
 # Oh, man, you labeled a lot of images
