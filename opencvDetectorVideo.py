@@ -47,7 +47,7 @@ while (cap.isOpened()):
     # coordinates of the objects in the image
     rows = frame.shape[0]
     cols = frame.shape[1]
-    cvNet.setInput(cv.dnn.blobFromImage(frame, size=(300, 300), swapRB=True, crop=False))
+    cvNet.setInput(cv.dnn.blobFromImage(frame, swapRB=True, crop=False))
     start = time.time()
     cvOut = cvNet.forward()
     end = time.time()
@@ -81,9 +81,9 @@ while (cap.isOpened()):
 
             # draw the predicted label and associated probability of the
             # instance segmentation on the image
-            #text = "{}: {:.4f}".format(LABELS[classID], confidence)
-            #cv.putText(frame, text, (startX, startY - 5),
-            #    cv.FONT_HERSHEY_SIMPLEX, 0.5, (23, 230, 210), 2)
+            text = "{}: {:.4f}".format(LABELS[classID], confidence)
+            cv.putText(frame, text, (startX, startY - 5),
+                cv.FONT_HERSHEY_SIMPLEX, 0.5, (23, 230, 210), 2)
 
     cv.imshow('img', frame)
     if cv.waitKey(1) & 0xFF == ord('q'):
