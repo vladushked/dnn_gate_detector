@@ -37,7 +37,7 @@ cvNet = cv.dnn.readNetFromTensorflow(weightsPath, configPath)
 img = cv.imread(args["image"])
 rows = img.shape[0]
 cols = img.shape[1]
-cvNet.setInput(cv.dnn.blobFromImage(img, swapRB=True, crop=False))
+cvNet.setInput(cv.dnn.blobFromImage(img, size=(300, 300), swapRB=True, crop=False))
 start = time.time()
 cvOut = cvNet.forward()
 end = time.time()
@@ -46,7 +46,38 @@ end = time.time()
 print("[INFO] %s took {:.6f} seconds".format(end - start) % (args['network']))
 print("[INFO] boxes shape: {}".format(cvOut.shape))
 
+# loop over the number of detected objects
+for i in range(0, cvOut.shape[2]):
+    # extract the class ID of the detection along with the confidence
+    # (i.e., probability) associated with the prediction
+    classID = int(cvOut[0, 0, i, 1])
+    confidence = cvOut[0, 0, i, 2]
+ 
+    # filter out weak predictions by ensuring the detected probability
+    # is greater than the minimum probability
+    if confidence > args["confidence"]:
+        # clone our original image so we can draw on it
+        clone = img.copy()
+ 
+        # scale the bounding box coordinates back relative to the
+        # size of the image and then compute the width and the height
+        # of the bounding box
+        box = cvOut[0, 0, i, 3:7] * np.array([cols, rows, cols, rows])
+        (startX, startY, endX, endY) = box.astype("int")
+        boxW = endX - startX
+        boxH = endY - startY 
+        cv.rectangle(clone, (startX, startY), (endX, endY), 
+            (23, 230, 210), thickness=2)  
 
+        # draw the predicted label and associated probability of the
+        # instance segmentation on the image
+        text = "{}: {:.4f}".format(LABELS[classID], confidence)
+        cv.putText(clone, text, (startX, startY - 5),
+            cv.FONT_HERSHEY_SIMPLEX, 0.5, (23, 230, 210), 2)
+
+        cv.imshow('img', clone)
+        cv.waitKey()
+"""
 for detection in cvOut[0,0,:,:]:
     print(detection)
     score = float(detection[2])
@@ -59,3 +90,4 @@ for detection in cvOut[0,0,:,:]:
 
 cv.imshow('img', img)
 cv.waitKey()
+"""
