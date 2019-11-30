@@ -12,6 +12,8 @@ import argparse
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--input", required=True,
 	help="path to input video")
+ap.add_argument("-o", "--output",  required=True,
+    help="path to output video file")
 ap.add_argument("-n", "--network", required=True,
 	help="base path to network directory")
 ap.add_argument("-v", "--visualize", type=int, default=0,
@@ -43,6 +45,10 @@ cvNet = cv.dnn.readNetFromTensorflow(weightsPath, configPath)
 
 # initialize the video stream
 cap = cv.VideoCapture(args["input"])
+
+# Define the codec and create VideoWriter object
+fourcc = cv.VideoWriter_fourcc(*'XVID')
+out = cv.VideoWriter(args["output"], fourcc, 30, (640,480))
 
 # loop over frames from the video file stream
 while (cap.isOpened()):
@@ -96,9 +102,11 @@ while (cap.isOpened()):
             # print (color)
 
     cv.imshow('img', frame)
+    out.write(frame)
 
     if cv.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
+out.release()
 cv.destroyAllWindows()
