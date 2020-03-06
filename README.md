@@ -37,3 +37,6 @@ python object_detection/model_main.py \
     --num_train_steps=${NUM_TRAIN_STEPS} \
     --sample_1_of_n_eval_examples=$SAMPLE_1_OF_N_EVAL_EXAMPLES \
     --alsologtostderr`
+
+
+`python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/ssd_mobilenet_v2_coco.config`
