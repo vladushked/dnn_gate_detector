@@ -40,3 +40,5 @@ python object_detection/model_main.py \
 
 
 `python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/ssd_mobilenet_v2_coco.config`
+
+`tensorboard --logdir=training`
