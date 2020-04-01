@@ -12,6 +12,7 @@ RUN pip install pillow
 RUN pip install lxml
 RUN pip install jupyter
 RUN pip install matplotlib
+RUN pip install pandas
 # cloning /tensorflow/models
 RUN mkdir -p /tensorflow/models
 RUN git clone https://github.com/tensorflow/models.git /tensorflow/models
@@ -24,5 +25,5 @@ RUN python setup.py install
 # export environment variable
 RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
+RUN git clone https://github.com/vladushked/dnn_gate_detector.git /tensorflow/models/research/object_detection/
 WORKDIR /tensorflow/models/research/object_detection/
-RUN git clone https://github.com/vladushked/dnn_gate_detector.git

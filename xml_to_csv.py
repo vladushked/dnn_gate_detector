@@ -1,8 +1,8 @@
 import os
+import argparse
 import glob
 import pandas as pd
 import xml.etree.ElementTree as ET
-
 
 def xml_to_csv(path):
     xml_list = []
@@ -24,13 +24,14 @@ def xml_to_csv(path):
     xml_df = pd.DataFrame(xml_list, columns=column_name)
     return xml_df
 
-
-def main():
-    for folder in ['train','test']:
-        image_path = os.path.join(os.getcwd(), ('images/' + folder))
-        xml_df = xml_to_csv(image_path)
-        xml_df.to_csv(('images/' + folder + '_labels.csv'), index=None)
-        print('Successfully converted xml to csv.')
-
-
-main()
+if __name__ == "__main__":
+    # construct the argument parser and parse the arguments
+    ap = argparse.ArgumentParser(description = "XML to CSV")
+    ap.add_argument("-d", "--data", required = True,
+        help="path to data")
+    args = vars(ap.parse_args())
+    image_path = os.path.join(args["data"])
+    for folder in ['train','eval']:
+        xml_df = xml_to_csv(image_path + folder)
+        xml_df.to_csv((folder + '_labels.csv'), index=None)
+        print('Successfully converted ' + folder + ' xml to csv.')
