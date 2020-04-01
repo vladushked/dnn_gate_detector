@@ -2,7 +2,7 @@
 FROM tensorflow/tensorflow:1.14.0-gpu
 # update and upgrade
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y git python-pip
+RUN apt-get install -y git python-pip nano
 RUN pip install --upgrade pip
 # installing all dependencies for Object detection API
 RUN apt-get install -y protobuf-compiler python-pil python-lxml

@@ -1,0 +1,24 @@
+item {
+  id: 1
+  name: 'gate'
+}
+
+item {
+  id: 2
+  name: 'red_flare'
+}
+
+item {
+  id: 3
+  name: 'mat'
+}
+
+item {
+  id: 4
+  name: 'red_bowl'
+}
+
+item {
+  id: 5
+  name: 'blue_bowl'
+}
