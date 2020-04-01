@@ -57,10 +57,13 @@ else:
 eval_images_quantity = int(len(images)*args['percentage'])
 random_images = random.sample(images, eval_images_quantity)
 for img in images:
+	lbl = img[:len(img) - 3] + "xml"
 	if img in random_images:
 		shutil.copyfile(os.path.join(IMAGES_DIR, img), os.path.join(DATA_DIR, EVAL_DIR, img))
+		shutil.copyfile(os.path.join(LABELS_DIR, lbl), os.path.join(DATA_DIR, EVAL_DIR, lbl))
 	else:
 		shutil.copyfile(os.path.join(IMAGES_DIR, img), os.path.join(DATA_DIR, TRAIN_DIR, img))
+		shutil.copyfile(os.path.join(LABELS_DIR, lbl), os.path.join(DATA_DIR, TRAIN_DIR, lbl))
 
 print('\n------------------')
 # Oh, man, you labeled a lot of images
