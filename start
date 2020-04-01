@@ -1,10 +1,10 @@
 #!/bin/bash
 
-python xml_to_csv.py -d /tensorflow/models/research/object_detection/images
-python generate_tfrecord.py --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/train_labels.csv --image_dir=/tensorflow/models/research/object_detection/images/train --output_path=/tensorflow/models/research/object_detection/data/train.record
-python generate_tfrecord.py --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/eval_labels.csv --image_dir=/tensorflow/models/research/object_detection/images/eval --output_path=/tensorflow/models/research/object_detection/images/data/eval.record
-cp label_map.pbtxt /tensorflow/models/research/object_detection/data/
-cp pipeline.config /tensorflow/models/research/object_detection/models/model
+python xml_to_csv.py -d /tensorflow/models/research/object_detection/user_folder/images
+python generate_tfrecord.py --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/train_labels.csv --image_dir=/tensorflow/models/research/object_detection/user_folder/images/train --output_path=/tensorflow/models/research/object_detection/data/train.record
+python generate_tfrecord.py --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/eval_labels.csv --image_dir=/tensorflow/models/research/object_detection/user_folder/images/eval --output_path=/tensorflow/models/research/object_detection/data/eval.record
+cp /tensorflow/models/research/object_detection/dnn_gate_detector/label_map.pbtxt /tensorflow/models/research/object_detection/data/
+cp /tensorflow/models/research/object_detection/user_folder/model/pipeline.config /tensorflow/models/research/object_detection/models/model
 
 # From the tensorflow/models/research/ directory
 PIPELINE_CONFIG_PATH=/tensorflow/models/research/object_detection/models/model/pipeline.config
