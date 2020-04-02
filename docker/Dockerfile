@@ -21,7 +21,7 @@ RUN git clone https://github.com/tensorflow/models.git /tensorflow/models
 RUN git clone https://github.com/cocodataset/cocoapi.git
 WORKDIR /cocoapi/PythonAPI
 RUN make
-RUN cp -r pycocotools tensorflow/models/research/
+RUN cp -r pycocotools /tensorflow/models/research/
 # compile protobufs
 WORKDIR /tensorflow/models/research
 RUN protoc object_detection/protos/*.proto --python_out=.
