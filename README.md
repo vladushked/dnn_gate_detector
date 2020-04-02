@@ -1,44 +1,45 @@
-# dnn_gate_detector
+# Реализация TensorFlow Object Detection API для Hydronautics team
+## Требования
+В данном туториале используется Docker. Обучение проводится на GPU. Используется TensorFlow 1, т.к. Object Detection API все еще не не поддерживает TensorFlow 2. CUDA и Cudnn желательно ставить версии 10.0 до обновления OD API.
 
-Исходный туториал можете почитать здесь - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
+*Список необходимого:*
+- Обновить Nvidia driver
+- Установить [CUDA 10.0](https://developer.nvidia.com/cuda-10.0-download-archive) и [Cudnn](https://developer.nvidia.com/rdp/cudnn-archive)
+- Установить [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+- Установить [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker) для поддержки Docker-ом GPU
+## Подготовка своего датасета
+### Нарезка видео на отдельные кадры
+После того, как ты отснял кучу видео с донкой в бассейне тебе нужно сделать из этих видео еще большую кучу картинок. Для этого необходимо использовать скрипт video_to_frames.py (костыльный скрипт, извините), который каждую секунду видео создает изображение.
 
-[Tensorflow Object Detection API Installation](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md)
+В командной строке нужно выполнить:  
+`python [path_to_your_work_directory]/video_to_frames.py [path_to_your_video] [framerate] [picture_filename] [format]` 
+где соответственно:
+- [path_to_your_work_directory] - путь к директории в которой лежит скрипт
+- [path_to_your_video] - путь к видео
+- [framerate] - количество кадров в секунду. Чтобы с каждой секунды видео получать больше фоток, нужно уменьшить это число
+- [picture_filename] - название конечных изображений. После него скрипт сам добавляет нумерацию.
+- [format] - формат конечных изображений БЕЗ ТОЧКИ: jpg, png и тд.
+### Пример
 
+`python video_to_frames.py ../gate_dataset_new/device_camera_image_raw_2019_10_06_12_58_06.avi 12 hydro jpg`
+
+# Размечаем полученные фотографии донного оборудования
+Прежде чем перейти к разметке, нужно оставить только те, которые содержат необходимые нам объекты (в принципе логично даааа)
+Далее запасаемся чайком и с помощью программы [labelImg](https://github.com/tzutalin/labelImg) отмечаем необходимые объекты
+### Объекты
+- gate - ворота (у ворот не надо отмечать штанги)
+- red_flare - красный столб перед воротами
+- yellow_flare - желтый столбик (находится в случайном месте в бассейне)
+- mat - полотно с тазиками
+- red_bowl - красный тазик
+- blue_bowl - синий тазик
+
+## Обучение 
+
+`docker run -it --name trainer --mount type=bind,source=/home/vladushked/object_detection_docker,target=/tensorflow/models/research/object_detection/user_folder -p 5000:8888 -p 5001:6006 hydronautics/tensorflow_object_detection`
+
+## Полезные ссылки
+
+Хороший туториал - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
+Официальный репозиторий - [Tensorflow Object Detection API Installation](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md)
 [Exporting a trained model for inference](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/exporting_models.md)
-
-[Как подготовить датасет к обучению / How to prepare dataset for training](https://github.com/vladushked/dnn_gate_detector/wiki/%D0%9A%D0%B0%D0%BA-%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%B8%D1%82%D1%8C-%D0%B4%D0%B0%D1%82%D0%B0%D1%81%D0%B5%D1%82-%D0%BA-%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8E---How-to-prepare-dataset-for-training)
-
-`docker run -it --rm --name tf -v ~/mywork:/notebooks -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3-jupyter`
-
-`docker run -it --rm -v ~/mywork:/tf -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:1.14.0-py3`
-
-`docker run --gpus all -it --rm -v ~/mywork:/tf -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:1.14.0-py3`
-
-`export PYTHONPATH=$PYTHONPATH:/tf/models/research/:/tf/models/research/slim`
-
-`export PATH=$PATH:~/.local/bin`
-
-`jupyter notebook --ip=0.0.0.0 --allow-root`
-
-`pip install --ignore-installed --upgrade tensorflow-gpu==1.14` — Release with GPU support (Ubuntu and Windows)
-
-`python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record`
-
-`python generate_tfrecord.py --csv_input=images/test_labels.csv --image_dir=images/test --output_path=test.record`
-
-`# From the tensorflow/models/research/ directory
-PIPELINE_CONFIG_PATH=~/models/research/object_detection/models/model/ssd_mobilenet_v2_coco.config
-MODEL_DIR=~/models/research/object_detection/models/model
-NUM_TRAIN_STEPS=200000
-SAMPLE_1_OF_N_EVAL_EXAMPLES=1
-python object_detection/model_main.py \
-    --pipeline_config_path=${PIPELINE_CONFIG_PATH} \
-    --model_dir=${MODEL_DIR} \
-    --num_train_steps=${NUM_TRAIN_STEPS} \
-    --sample_1_of_n_eval_examples=$SAMPLE_1_OF_N_EVAL_EXAMPLES \
-    --alsologtostderr`
-
-
-`python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/ssd_mobilenet_v2_coco.config`
-
-`tensorboard --logdir=training`
