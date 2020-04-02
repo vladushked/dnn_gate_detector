@@ -5,7 +5,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y git python-pip nano
 RUN pip install --upgrade pip
 # installing all dependencies for Object detection API
-RUN apt-get install -y protobuf-compiler python-pil python-lxml python-tk && 8 && 32
+RUN apt-get install -y protobuf-compiler python-pil python-lxml
 RUN pip install Cython
 RUN pip install contextlib2
 RUN pip install pillow
