@@ -19,7 +19,7 @@ RUN mkdir -p /tensorflow/models
 RUN git clone https://github.com/tensorflow/models.git /tensorflow/models
 # COCO API installation
 RUN git clone https://github.com/cocodataset/cocoapi.git
-RUN cd cocoapi/PythonAPI
+WORKDIR /cocoapi/PythonAPI
 RUN make
 RUN cp -r pycocotools tensorflow/models/research/
 # compile protobufs
