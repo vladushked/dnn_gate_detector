@@ -8,7 +8,31 @@
 - Установить [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 - Установить [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker) для поддержки Docker-ом GPU
 ## Подготовка своего датасета
-[Как подготовить датасет к обучению / How to prepare dataset for training](https://github.com/vladushked/dnn_gate_detector/wiki/%D0%9A%D0%B0%D0%BA-%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%B8%D1%82%D1%8C-%D0%B4%D0%B0%D1%82%D0%B0%D1%81%D0%B5%D1%82-%D0%BA-%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8E---How-to-prepare-dataset-for-training)
+### Нарезка видео на отдельные кадры
+После того, как ты отснял кучу видео с донкой в бассейне тебе нужно сделать из этих видео еще большую кучу картинок. Для этого необходимо использовать скрипт video_to_frames.py (костыльный скрипт, извините), который каждую секунду видео создает изображение.
+
+В командной строке нужно выполнить:  
+`python [path_to_your_work_directory]/video_to_frames.py [path_to_your_video] [framerate] [picture_filename] [format]` 
+где соответственно:
+- [path_to_your_work_directory] - путь к директории в которой лежит скрипт
+- [path_to_your_video] - путь к видео
+- [framerate] - количество кадров в секунду. Чтобы с каждой секунды видео получать больше фоток, нужно уменьшить это число
+- [picture_filename] - название конечных изображений. После него скрипт сам добавляет нумерацию.
+- [format] - формат конечных изображений БЕЗ ТОЧКИ: jpg, png и тд.
+### Пример
+
+`python video_to_frames.py ../gate_dataset_new/device_camera_image_raw_2019_10_06_12_58_06.avi 12 hydro jpg`
+
+# Размечаем полученные фотографии донного оборудования
+Прежде чем перейти к разметке, нужно оставить только те, которые содержат необходимые нам объекты (в принципе логично даааа)
+Далее запасаемся чайком и с помощью программы [labelImg](https://github.com/tzutalin/labelImg) отмечаем необходимые объекты
+### Объекты
+- gate - ворота (у ворот не надо отмечать штанги)
+- red_flare - красный столб перед воротами
+- yellow_flare - желтый столбик (находится в случайном месте в бассейне)
+- mat - полотно с тазиками
+- red_bowl - красный тазик
+- blue_bowl - синий тазик
 
 ## Обучение 
 
