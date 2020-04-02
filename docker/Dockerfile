@@ -13,17 +13,24 @@ RUN pip install lxml
 RUN pip install jupyter
 RUN pip install matplotlib
 RUN pip install pandas
+RUN pip install opencv-python
 # cloning /tensorflow/models
 RUN mkdir -p /tensorflow/models
 RUN git clone https://github.com/tensorflow/models.git /tensorflow/models
-WORKDIR /tensorflow/models/research
+# COCO API installation
+RUN git clone https://github.com/cocodataset/cocoapi.git
+RUN cd cocoapi/PythonAPI
+RUN make
+RUN cp -r pycocotools tensorflow/models/research/
 # compile protobufs
+WORKDIR /tensorflow/models/research
 RUN protoc object_detection/protos/*.proto --python_out=.
 # install
 RUN python setup.py build
 RUN python setup.py install
 # export environment variable
 RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-
-RUN git clone https://github.com/vladushked/dnn_gate_detector.git /tensorflow/models/research/object_detection/
 WORKDIR /tensorflow/models/research/object_detection/
+RUN git clone https://github.com/vladushked/dnn_gate_detector.git
+RUN mkdir user_folder
+
