@@ -2,16 +2,16 @@
 
 export PYTHONPATH=$PYTHONPATH:/tensorflow/models/research/:/tensorflow/models/research/slim
 
-python /tensorflow/models/research/object_detection/dnn_gate_detector/xml_to_csv.py \
-    -d /tensorflow/models/research/object_detection/user_folder/images
-python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
-    --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/train_labels.csv \
-    --image_dir=/tensorflow/models/research/object_detection/user_folder/images/train \
-    --output_path=/tensorflow/models/research/object_detection/user_folder/data/train.record
-python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
-    --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/eval_labels.csv \
-    --image_dir=/tensorflow/models/research/object_detection/user_folder/images/eval \
-    --output_path=/tensorflow/models/research/object_detection/user_folder/data/eval.record
+#python /tensorflow/models/research/object_detection/dnn_gate_detector/xml_to_csv.py \
+#    -d /tensorflow/models/research/object_detection/user_folder/images
+#python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
+#    --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/train_labels.csv \
+#    --image_dir=/tensorflow/models/research/object_detection/user_folder/images/train \
+#    --output_path=/tensorflow/models/research/object_detection/user_folder/data/train.record
+#python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
+#    --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/eval_labels.csv \
+#    --image_dir=/tensorflow/models/research/object_detection/user_folder/images/eval \
+#    --output_path=/tensorflow/models/research/object_detection/user_folder/data/eval.record
 #python /tensorflow/models/research/object_detection/legacy/train.py \
 #    --logtostderr \
 #    --train_dir=/tensorflow/models/research/object_detection/user_folder/training/ \
