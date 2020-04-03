@@ -1,4 +1,4 @@
-# How To Train an Object Detection Classifier using TensorFlow Object Detection API with Docker on GPU
+# How to train an object detection classifier on custom dataset using TensorFlow Object Detection API and Docker on GPU
 *for [Hydronautics team](https://vk.com/hydronautics)*
 ## Требования
 В данном туториале используется Docker. Обучение проводится на GPU. Используется TensorFlow 1, т.к. Object Detection API все еще не не поддерживает TensorFlow 2. CUDA и Cudnn желательно ставить версии 10.0 до обновления OD API.
