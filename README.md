@@ -78,10 +78,10 @@ apt install python-tk
 +training (here will be your trained model)
     -pipeline config file
 ```
-В директорию **data** нужно поместить `label_map.pbtxt` и отредактировать его под свои объекты.
-Далее свои изображения поместить в **images**
-В **model** помещаете скачанную с официального [репозитория](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) сетку. 
-В директорию **training** поместить config своей сети, взятый из папки [configs](https://github.com/vladushked/dnn_gate_detector/tree/master/configs) моего репозитория или [отсюда](https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs), но тогда пропишите такие же пути к *fine_tuned_checkpoint*, *labels_map*, *train.record* и *eval.record*.
+1. В директорию **data** нужно поместить `label_map.pbtxt` и отредактировать его под свои объекты.
+2. Далее свои изображения поместить в **images**.
+3. В **model** помещаете скачанную с официального [репозитория](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) сетку. 
+4. В директорию **training** поместить config своей сети, взятый из папки [configs](https://github.com/vladushked/dnn_gate_detector/tree/master/configs) моего репозитория или [отсюда](https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs), но тогда пропишите такие же пути к *fine_tuned_checkpoint*, *labels_map*, *train.record* и *eval.record*.
 ```
 cd dnn_gate_detector
 git pull
