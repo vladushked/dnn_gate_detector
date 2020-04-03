@@ -28,9 +28,9 @@ RUN protoc object_detection/protos/*.proto --python_out=.
 # install
 RUN python setup.py build
 RUN python setup.py install
-# export environment variable
-RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+# cloning vladushked/dnn_gate_detector
 WORKDIR /tensorflow/models/research/object_detection/
 RUN git clone https://github.com/vladushked/dnn_gate_detector.git
+# make folder for images and model
 RUN mkdir user_folder
 
