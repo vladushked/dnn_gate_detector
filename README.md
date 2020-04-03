@@ -42,7 +42,7 @@ docker build -t hydronautics/tensorflow-gpu-object-detection .
 После сборки образа создаем контейнер и доустанавливаем **python-tk**, т.к. при установке нужно указать регион (при сборке с этим пакетом, тормозится именно на месте, где надо указать регион).
 Первая команда запускает контейнер в интерактивном режиме, монтирует Вашу директорию к *user_folder* в контейнере, пробрасывает порты под tensorboard (6006) и сам контейнер (8888. К нему можно подключиться потом по ssh. Подробнее [здесь](https://leimao.github.io/blog/TensorBoard-On-Docker/)). 
 ```
-docker run -it --name trainer --mount type=bind,source=[path_to_your_dir],target=/tensorflow/models/research/object_detection/user_folder -p 5000:8888 -p 5001:6006 hydronautics/tensorflow_object_detection
+docker run --gpus all -it --name trainer --mount type=bind,source=[path_to_your_dir],target=/tensorflow/models/research/object_detection/user_folder -p 5000:8888 -p 5001:6006 hydronautics/tensorflow_object_detection
 apt install python-tk
 ```
 ## Обучение 
@@ -51,6 +51,7 @@ apt install python-tk
 
 ```
 cd dnn_gate_detector
+git pull
 ./start_training
 ```
 ## Полезные ссылки
