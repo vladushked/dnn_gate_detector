@@ -3,7 +3,7 @@
 python /tensorflow/models/research/object_detection/dnn_gate_detector/xml_to_csv.py -d /tensorflow/models/research/object_detection/user_folder/images
 python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/train_labels.csv --image_dir=/tensorflow/models/research/object_detection/user_folder/images/train --output_path=/tensorflow/models/research/object_detection/data/train.record
 python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/eval_labels.csv --image_dir=/tensorflow/models/research/object_detection/user_folder/images/eval --output_path=/tensorflow/models/research/object_detection/data/eval.record
-mkdir /tensorflow/models/research/object_detection/models/model
+mkdir /tensorflow/models/research/object_detection/models/model/
 cp /tensorflow/models/research/object_detection/dnn_gate_detector/label_map.pbtxt /tensorflow/models/research/object_detection/data/
 cp /tensorflow/models/research/object_detection/user_folder/model/pipeline.config /tensorflow/models/research/object_detection/models/model
 
@@ -18,4 +18,4 @@ python /tensorflow/models/research/object_detection/model_main.py \
     --model_dir=${MODEL_DIR} \
     --num_train_steps=${NUM_TRAIN_STEPS} \
     --sample_1_of_n_eval_examples=$SAMPLE_1_OF_N_EVAL_EXAMPLES \
-    --alsologtostderr &&
+    --alsologtostderr 
