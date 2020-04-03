@@ -33,11 +33,19 @@
 - mat - полотно с тазиками
 - red_bowl - красный тазик
 - blue_bowl - синий тазик
+## Сборка образа
+`docker build -t hydronautics/tensorflow-gpu-object-detection .`
 
 ## Обучение 
 
-`docker run -it --name trainer --mount type=bind,source=/home/vladushked/object_detection_docker,target=/tensorflow/models/research/object_detection/user_folder -p 5000:8888 -p 5001:6006 hydronautics/tensorflow_object_detection`
-
+```
+docker run -it --name trainer --mount type=bind,source=/home/vladushked/object_detection_docker,target=/tensorflow/models/research/object_detection/user_folder -p 5000:8888 -p 5001:6006 hydronautics/tensorflow_object_detection
+apt install python-tk
+```
+```
+cd dnn_gate_detector
+./start_training
+```
 ## Полезные ссылки
 
 Хороший туториал - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
