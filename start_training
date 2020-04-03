@@ -2,31 +2,38 @@
 
 export PYTHONPATH=$PYTHONPATH:/tensorflow/models/research/:/tensorflow/models/research/slim
 
-#python /tensorflow/models/research/object_detection/dnn_gate_detector/xml_to_csv.py \
+### Uncomment following lines to generate own tfrecords from user_folder/images 
+# python /tensorflow/models/research/object_detection/dnn_gate_detector/xml_to_csv.py \
 #    -d /tensorflow/models/research/object_detection/user_folder/images
-#python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
+# python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
 #    --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/train_labels.csv \
 #    --image_dir=/tensorflow/models/research/object_detection/user_folder/images/train \
 #    --output_path=/tensorflow/models/research/object_detection/user_folder/data/train.record
-#python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
+# python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py \
 #    --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/eval_labels.csv \
 #    --image_dir=/tensorflow/models/research/object_detection/user_folder/images/eval \
 #    --output_path=/tensorflow/models/research/object_detection/user_folder/data/eval.record
-#python /tensorflow/models/research/object_detection/legacy/train.py \
+
+### Uncomment to use LEGACY train script
+# python /tensorflow/models/research/object_detection/legacy/train.py \
 #    --logtostderr \
 #    --train_dir=/tensorflow/models/research/object_detection/user_folder/training/ \
 #    --pipeline_config_path=/tensorflow/models/research/object_detection/user_folder/training/pipeline.config
 
-PIPELINE_CONFIG_PATH=/tensorflow/models/research/object_detection/user_folder/training/pipeline.config
+### Uncomment to run tensorboard
+# tensorboard --logdir=${MODEL_DIR} &
+
+### Uncomment necessary config path line
+# PIPELINE_CONFIG_PATH=/tensorflow/models/research/object_detection/user_folder/training/faster_rcnn_inception_v2.config
+PIPELINE_CONFIG_PATH=/tensorflow/models/research/object_detection/user_folder/training/ssd_mobilenet_v2.config
 MODEL_DIR=/tensorflow/models/research/object_detection/user_folder/training/
-NUM_TRAIN_STEPS=160000
+NUM_TRAIN_STEPS=200000
 SAMPLE_1_OF_N_EVAL_EXAMPLES=1
 python /tensorflow/models/research/object_detection/model_main.py \
     --pipeline_config_path=${PIPELINE_CONFIG_PATH} \
     --model_dir=${MODEL_DIR} \
     --num_train_steps=${NUM_TRAIN_STEPS} \
     --sample_1_of_n_eval_examples=$SAMPLE_1_OF_N_EVAL_EXAMPLES \
-    --alsologtostderr 
-# tensorboard --logdir=${MODEL_DIR} & 
+    --alsologtostderr  
 
 
