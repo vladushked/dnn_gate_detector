@@ -20,9 +20,7 @@
 - [picture_filename] - название конечных изображений. После него скрипт сам добавляет нумерацию.
 - [format] - формат конечных изображений БЕЗ ТОЧКИ: jpg, png и тд.
 ### Пример
-
 `python video_to_frames.py ../gate_dataset_new/device_camera_image_raw_2019_10_06_12_58_06.avi 12 hydro jpg`
-
 # Размечаем полученные фотографии донного оборудования
 Прежде чем перейти к разметке, нужно оставить только те, которые содержат необходимые нам объекты (в принципе логично даааа)
 Далее запасаемся чайком и с помощью программы [labelImg](https://github.com/tzutalin/labelImg) отмечаем необходимые объекты
@@ -33,15 +31,24 @@
 - mat - полотно с тазиками
 - red_bowl - красный тазик
 - blue_bowl - синий тазик
-## Сборка образа
-`docker build -t hydronautics/tensorflow-gpu-object-detection .`
-
-## Обучение 
-
+## Сборка образа и первый запуск контейнера
 ```
-docker run -it --name trainer --mount type=bind,source=/home/vladushked/object_detection_docker,target=/tensorflow/models/research/object_detection/user_folder -p 5000:8888 -p 5001:6006 hydronautics/tensorflow_object_detection
+cd docker
+docker build -t hydronautics/tensorflow-gpu-object-detection .
+```
+*...*
+*Можно попить чаЁк*
+
+После сборки образа создаем контейнер и доустанавливаем **python-tk**, т.к. при установке нужно указать регион (при сборке с этим пакетом, тормозится именно на месте, где надо указать регион).
+Первая команда запускает контейнер в интерактивном режиме, монтирует Вашу директорию к *user_folder* в контейнере, пробрасывает порты под tensorboard (6006) и сам контейнер (8888. К нему можно подключиться потом по ssh. Подробнее [здесь](https://leimao.github.io/blog/TensorBoard-On-Docker/)). 
+```
+docker run -it --name trainer --mount type=bind,source=[path_to_your_dir],target=/tensorflow/models/research/object_detection/user_folder -p 5000:8888 -p 5001:6006 hydronautics/tensorflow_object_detection
 apt install python-tk
 ```
+## Обучение 
+
+
+
 ```
 cd dnn_gate_detector
 ./start_training
