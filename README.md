@@ -51,14 +51,43 @@ docker run --gpus all \
 apt install python-tk
 ```
 ## Обучение 
-
-
-
+### Структура директории *user_folder*
+```
++data
+    -label_map.pbtxt (label map file)
+    -train.record (train TFRecord file)
+    -eval.record (test TFRecord file)
++images
+    +eval
+        -heap of your test images
+        -
+        -
+    +train
+        -heap of your train images
+        -
+        -
++model
+    -fine tuned checkpoint of trained model
++training (here will be your trained model)
+    -pipeline config file
+```
+В директорию **data** нужно поместить `label_map.pbtxt` и отредактировать его под свои объекты.
+Далее свои изображения поместить в **images**
+В **model** помещаете скачанную с официального [репозитория](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) сетку. 
+В директорию **training** поместить config своей сети, взятый из папки [configs](https://github.com/vladushked/dnn_gate_detector/tree/master/configs) моего репозитория или [отсюда](https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs), но тогда пропишите такие же пути к *fine_tuned_checkpoint*, *labels_map*, *train.record* и *eval.record*.
 ```
 cd dnn_gate_detector
 git pull
 ./start_training
 ```
+
+Если вышли из контейнера, то посмотреть, запущен ли он, можно командой `docker ps` и войти `docker attach trainer`
+Если ничего нет, то:
+```
+docker start trainer
+docker attach trainer
+```
+
 ## Полезные ссылки
 
 Хороший туториал - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
