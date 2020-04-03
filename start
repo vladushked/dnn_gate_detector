@@ -7,17 +7,24 @@ python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_t
 python /tensorflow/models/research/object_detection/dnn_gate_detector/generate_tfrecord.py --csv_input=/tensorflow/models/research/object_detection/dnn_gate_detector/eval_labels.csv --image_dir=/tensorflow/models/research/object_detection/user_folder/images/eval --output_path=/tensorflow/models/research/object_detection/data/eval.record
 mkdir -p /tensorflow/models/research/object_detection/models/model/
 cp /tensorflow/models/research/object_detection/dnn_gate_detector/label_map.pbtxt /tensorflow/models/research/object_detection/data/
-cp /tensorflow/models/research/object_detection/user_folder/model/pipeline.config /tensorflow/models/research/object_detection/models/model
+# cp /tensorflow/models/research/object_detection/user_folder/model/pipeline.config /tensorflow/models/research/object_detection/models/model
 
 # From the tensorflow/models/research/ directory
 PIPELINE_CONFIG_PATH=/tensorflow/models/research/object_detection/models/model/pipeline.config
 MODEL_DIR=/tensorflow/models/research/object_detection/models/model
 NUM_TRAIN_STEPS=160000
 SAMPLE_1_OF_N_EVAL_EXAMPLES=1
+
 # tensorboard --logdir=${MODEL_DIR} & 
-python /tensorflow/models/research/object_detection/model_main.py \
-    --pipeline_config_path=${PIPELINE_CONFIG_PATH} \
-    --model_dir=${MODEL_DIR} \
-    --num_train_steps=${NUM_TRAIN_STEPS} \
-    --sample_1_of_n_eval_examples=$SAMPLE_1_OF_N_EVAL_EXAMPLES \
-    --alsologtostderr 
+mkdir -p /tensorflow/models/research/object_detection/train
+python /tensorflow/models/research/object_detection/legacy/train.py \
+    --logtostderr \
+    --train_dir=training/ \
+    --pipeline_config_path=/tensorflow/models/research/object_detection/user_folder/model/pipeline.config
+
+#python /tensorflow/models/research/object_detection/model_main.py \
+#    --pipeline_config_path=${PIPELINE_CONFIG_PATH} \
+#    --model_dir=${MODEL_DIR} \
+#    --num_train_steps=${NUM_TRAIN_STEPS} \
+#    --sample_1_of_n_eval_examples=$SAMPLE_1_OF_N_EVAL_EXAMPLES \
+#    --alsologtostderr 
