@@ -97,7 +97,7 @@ docker attach trainer
 
 ## Полезные ссылки
 
-Хороший туториал - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
-Официальный репозиторий - [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection)
-На хабре на русском - [Инструкция по работе с TensorFlow Object Detection API](https://habr.com/ru/company/nix/blog/422353/)
-На Medium - [TensorFlow Object Detection with Docker from scratch](https://towardsdatascience.com/tensorflow-object-detection-with-docker-from-scratch-5e015b639b0b)
+1. Хороший туториал - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
+2. Официальный репозиторий - [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection)
+3. На хабре на русском - [Инструкция по работе с TensorFlow Object Detection API](https://habr.com/ru/company/nix/blog/422353/)
+4. На Medium - [TensorFlow Object Detection with Docker from scratch](https://towardsdatascience.com/tensorflow-object-detection-with-docker-from-scratch-5e015b639b0b)
