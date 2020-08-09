@@ -1,0 +1,5 @@
+classes= 6 
+train  = /home/vladushked/Documents/hydro/dnn_gate_detector/yolo_cfg/train.txt  
+valid  = /home/vladushked/Documents/hydro/dnn_gate_detector/yolo_cfg/eval.txt  
+names = /home/vladushked/Documents/hydro/dnn_gate_detector/yolo_cfg/obj.names  
+backup = backup
