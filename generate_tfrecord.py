@@ -1,12 +1,3 @@
-"""
-Usage:
-  # From tensorflow/models/
-  # Create train data:
-  python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record
-
-  # Create test data:
-  python generate_tfrecord.py --csv_input=images/test_labels.csv  --image_dir=images/test --output_path=test.record
-"""
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
@@ -14,7 +5,12 @@ from __future__ import absolute_import
 import os
 import io
 import pandas as pd
-import tensorflow as tf
+
+from tensorflow.python.framework.versions import VERSION
+if VERSION >= "2.0.0a0":
+    import tensorflow.compat.v1 as tf
+else:
+    import tensorflow as tf
 
 from PIL import Image
 from object_detection.utils import dataset_util
@@ -22,27 +18,24 @@ from collections import namedtuple, OrderedDict
 
 flags = tf.app.flags
 flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
-flags.DEFINE_string('image_dir', '', 'Path to the image directory')
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
+flags.DEFINE_string('image_dir', '', 'Path to images')
 FLAGS = flags.FLAGS
 
 
-# TO-DO replace this with label map
 def class_text_to_int(row_label):
-    if row_label == 'nine':
+    if row_label == 'gate':
         return 1
-    elif row_label == 'ten':
+    elif row_label == 'red_flare':
         return 2
-    elif row_label == 'jack':
+    elif row_label == 'yellow_flare':
         return 3
-    elif row_label == 'queen':
+    elif row_label == 'red_bowl':
         return 4
-    elif row_label == 'king':
+    elif row_label == 'blue_bowl':
         return 5
-    elif row_label == 'ace':
-        return 6
     else:
-        None
+        return None
 
 
 def split(df, group):
@@ -94,7 +87,7 @@ def create_tf_example(group, path):
 
 def main(_):
     writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
-    path = os.path.join(os.getcwd(), FLAGS.image_dir)
+    path = os.path.join(FLAGS.image_dir)
     examples = pd.read_csv(FLAGS.csv_input)
     grouped = split(examples, 'filename')
     for group in grouped:
