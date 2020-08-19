@@ -11,7 +11,9 @@
 ### Нарезка видео на отдельные кадры 
 
 В командной строке:  
-`python [path_to_your_work_directory]/video_to_frames.py [path_to_your_video] [framerate] [picture_filename] [format]` 
+```bash
+python [path_to_your_work_directory]/video_to_frames.py [path_to_your_video] [framerate] [picture_filename] [format]
+``` 
 где:
 - [path_to_your_work_directory] - путь к директории в которой лежит скрипт
 - [path_to_your_video] - путь к видео
@@ -19,7 +21,9 @@
 - [picture_filename] - название конечных изображений. После него скрипт сам добавляет нумерацию.
 - [format] - формат конечных изображений БЕЗ ТОЧКИ: jpg, png и тд.
 **Пример**
-`python video_to_frames.py ../gate_dataset_new/device_camera_image_raw_2019_10_06_12_58_06.avi 12 hydro jpg`
+```bash
+python video_to_frames.py ../gate_dataset_new/device_camera_image_raw_2019_10_06_12_58_06.avi 12 hydro jpg
+```
 ### Разметка полученных фотографий
 С помощью программы [labelImg](https://github.com/tzutalin/labelImg) отмечаем необходимые объекты на каждой фотографии
 Примеры объектов:
@@ -32,7 +36,7 @@
 ### Перемешивание изображений и создание выборок
 Далее необходимо перемешать все изображения скриптом **randomData.py** (--help есть). Этот скрипт формирует папочку *data* с подпапками *train* и *eval*. По умолчанию скрипт отбирает случайно 20% изображений для тестовой выборки. Required только -i/--images путь до папки с изображениями. Если размечали вы в программе labelImg, то .xml метки у вас будут в той же директории, что и изображения.
 **Пример**
-```
+```bash
 python randomData.py -i /home/vladushked/hydro/images/
 python randomData.py -i /home/vladushked/hydro/images/ -l /home/vladushked/hydro/labels/ -p 0.15
 ```
@@ -57,7 +61,7 @@ def class_text_to_int(row_label):
 ```
 и с помощью него создаем 2 файла TFrecord. 
 
-```
+```bash
 python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record
 python generate_tfrecord.py --csv_input=images/eval_labels.csv --image_dir=images/eval --output_path=eval.record
 ```
@@ -123,7 +127,7 @@ item {
 Склоньте репозиторий [Object Detection API](https://github.com/tensorflow/models.git)
 Далее 
 
-```
+```bash
 cd models
 docker build -f research/object_detection/dockerfiles/tf2/Dockerfile -t od .
 ```
@@ -132,15 +136,15 @@ docker build -f research/object_detection/dockerfiles/tf2/Dockerfile -t od .
 
 ## Создание контейнера
 Первая команда запускает контейнер в интерактивном режиме, монтирует Вашу директорию к *user_folder* в контейнере, пробрасывает порт под tensorboard
-```
+```bash
 docker run --gpus all \
     -it --name trainer \
-    --mount type=bind,source=[path_to_your_dir],target=/tensorflow/models/research/object_detection/user_folder \
+    --mount type=bind,source=[path_to_your_dir],target=/home/tensorflow/models/research/object_detection/user_folder \
     -p 6006:6006 \
     od
 ```
 ## Запуск контейнера
-```
+```bash
 docker start trainer
 docker attach trainer
 ```
@@ -176,7 +180,16 @@ python model_main_tf2.py --pipeline_config_path=path_to_config --model_dir=path_
 Если вышли из контейнера, то посмотреть, запущен ли он, можно командой `docker ps` и войти `docker attach trainer`
 Если ничего нет, то:
 
+## Запуск Jupyter Notebook
 
+```bash
+pip3 install jupyter
+```
+Из директории object_detection 
+```bash
+jupyter notebook --ip 0.0.0.0 --port 9999 --no-browser
+
+```
 ## Полезные ссылки
 
 [How to train a custom object detection model with the Tensorflow 2 Object Detection API](https://github.com/TannerGilbert/Tensorflow-Object-Detection-API-Train-Model)
