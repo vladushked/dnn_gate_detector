@@ -135,12 +135,13 @@ docker build -f research/object_detection/dockerfiles/tf2/Dockerfile -t od .
 *Можно попить чаёк*
 
 ## Создание контейнера
-Первая команда запускает контейнер в интерактивном режиме, монтирует Вашу директорию к *user_folder* в контейнере, пробрасывает порт под tensorboard
+Первая команда запускает контейнер в интерактивном режиме, монтирует Вашу директорию к *user_folder* в контейнере, пробрасывает порт под tensorboard и jupyter
 ```bash
 docker run --gpus all \
     -it --name trainer \
     --mount type=bind,source=[path_to_your_dir],target=/home/tensorflow/models/research/object_detection/user_folder \
     -p 6006:6006 \
+    -p 8000:8000 \
     od
 ```
 ## Запуск контейнера
@@ -187,7 +188,7 @@ pip3 install jupyter
 ```
 Из директории object_detection 
 ```bash
-jupyter notebook --ip 0.0.0.0 --port 9999 --no-browser
+jupyter notebook --ip 0.0.0.0 --port 8000 --no-browser
 
 ```
 ## Полезные ссылки
