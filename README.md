@@ -1,20 +1,18 @@
-# How to train an object detection classifier on custom dataset using TensorFlow Object Detection API and Docker on GPU
+# Как обучить нейросеть для детектирования соих объектов на GPU, Tensorflow 2 Object Detection API
+# How to train an object detection classifier on custom dataset using TensorFlow 2 Object Detection API and Docker on GPU
 *for [Hydronautics team](https://vk.com/hydronautics)*
 ## Требования
-В данном туториале используется Docker. Обучение проводится на GPU. Используется TensorFlow 1, т.к. Object Detection API все еще не не поддерживает TensorFlow 2. CUDA и Cudnn желательно ставить версии 10.0 до обновления OD API.
 
-*Список необходимого:*
 - Обновить Nvidia driver
-- Установить [CUDA 10.0](https://developer.nvidia.com/cuda-10.0-download-archive) и [Cudnn](https://developer.nvidia.com/rdp/cudnn-archive)
+- Установить [CUDA 10.1](https://developer.nvidia.com/cuda-10.1-download-archive-base) и [Cudnn](https://developer.nvidia.com/rdp/cudnn-archive)
 - Установить [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
-- Установить [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker) для поддержки Docker-ом GPU
+- Установить [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker)
 ## Подготовка своего датасета
-### Нарезка видео на отдельные кадры (ранняя версия туториала, сори за сленг)
-После того, как ты отснял кучу видео с донкой в бассейне тебе нужно сделать из этих видео еще большую кучу картинок. Для этого необходимо использовать скрипт video_to_frames.py (костыльный скрипт, извините), который каждую секунду видео создает изображение.
+### Нарезка видео на отдельные кадры 
 
-В командной строке нужно выполнить:  
+В командной строке:  
 `python [path_to_your_work_directory]/video_to_frames.py [path_to_your_video] [framerate] [picture_filename] [format]` 
-где соответственно:
+где:
 - [path_to_your_work_directory] - путь к директории в которой лежит скрипт
 - [path_to_your_video] - путь к видео
 - [framerate] - количество кадров в секунду. Чтобы с каждой секунды видео получать больше фоток, нужно уменьшить это число
@@ -22,42 +20,131 @@
 - [format] - формат конечных изображений БЕЗ ТОЧКИ: jpg, png и тд.
 **Пример**
 `python video_to_frames.py ../gate_dataset_new/device_camera_image_raw_2019_10_06_12_58_06.avi 12 hydro jpg`
-### Размечаем полученные фотографии донного оборудования
-Прежде чем перейти к разметке, нужно оставить только те, которые содержат необходимые нам объекты.
-Далее запасаемся чайком и с помощью программы [labelImg](https://github.com/tzutalin/labelImg) отмечаем необходимые объекты
-### Объекты
+### Разметка полученных фотографий
+С помощью программы [labelImg](https://github.com/tzutalin/labelImg) отмечаем необходимые объекты на каждой фотографии
+Примеры объектов:
 - gate - ворота (у ворот не надо отмечать штанги)
 - red_flare - красный столб перед воротами
 - yellow_flare - желтый столбик (находится в случайном месте в бассейне)
 - mat - полотно с тазиками
 - red_bowl - красный тазик
 - blue_bowl - синий тазик
-##
+### Перемешивание изображений и создание выборок
 Далее необходимо перемешать все изображения скриптом **randomData.py** (--help есть). Этот скрипт формирует папочку *data* с подпапками *train* и *eval*. По умолчанию скрипт отбирает случайно 20% изображений для тестовой выборки. Required только -i/--images путь до папки с изображениями. Если размечали вы в программе labelImg, то .xml метки у вас будут в той же директории, что и изображения.
 **Пример**
 ```
 python randomData.py -i /home/vladushked/hydro/images/
 python randomData.py -i /home/vladushked/hydro/images/ -l /home/vladushked/hydro/labels/ -p 0.15
 ```
-## Сборка образа и первый запуск контейнера
+### Подготовка датаcета для обучения
+С помощью скрипта `xml_to_csv.py` формируем 2 файла train_labels.csv и eval_labels.csv
+Далее в скрипте `generate_tfrecord.py` надо добавить свои метки 
 ```
-cd docker
-docker build -t hydronautics/tensorflow-gpu-object-detection .
+# TO-DO replace this with label map
+def class_text_to_int(row_label):
+    if row_label == 'gate':
+        return 1
+    elif row_label == 'red_flare':
+        return 2
+    elif row_label == 'yellow_flare':
+        return 3
+    elif row_label == 'red_bowl':
+        return 4
+    elif row_label == 'blue_bowl':
+        return 5
+    else:
+        return None
+```
+и с помощью него создаем 2 файла TFrecord. 
+
+```
+python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record
+python generate_tfrecord.py --csv_input=images/eval_labels.csv --image_dir=images/eval --output_path=eval.record
+```
+## Создание label map
+
+В директории data создаем файл со своими метками
+```
+item {
+  id: 1
+  name: 'gate'
+}
+
+item {
+  id: 2
+  name: 'red_flare'
+}
+
+item {
+  id: 3
+  name: 'yellow_flare'
+}
+
+item {
+  id: 4
+  name: 'red_bowl'
+}
+
+item {
+  id: 5
+  name: 'blue_bowl'
+}
+
+```
+##
+
+Далее из директории [configs/tf2 folder](https://github.com/tensorflow/models/tree/master/research/object_detection/configs/tf2) копируем в папку training наш конфиг
+
+* Line 13: change the number of classes to number of objects you want to detect (4 in my case)
+
+* Line 141: change fine_tune_checkpoint to the path of the model.ckpt file:
+
+    * ```fine_tune_checkpoint: "<path>/efficientdet_d0_coco17_tpu-32/checkpoint/ckpt-0"```
+
+* Line 143: Change ```fine_tune_checkpoint_type``` to detection
+
+* Line 182: change input_path to the path of the train.records file:
+
+    * ```input_path: "<path>/train.record"```
+
+* Line 197: change input_path to the path of the test.records file:
+
+    * ```input_path: "<path>/test.record"```
+
+* Line 180 and 193: change label_map_path to the path of the label map:
+
+    * ```label_map_path: "<path>/labelmap.pbtxt"```
+
+* Line 144 and 189: change batch_size to a number appropriate for your hardware, like 4, 8, or 16.
+
+
+## Сборка образа 
+
+Склоньте репозиторий [Object Detection API](https://github.com/tensorflow/models.git)
+Далее 
+
+```
+cd models
+docker build -f research/object_detection/dockerfiles/tf2/Dockerfile -t od .
 ```
 *...*
-*Можно попить чаЁк*
+*Можно попить чаёк*
 
-После сборки образа создаем контейнер и доустанавливаем **python-tk**, т.к. при установке нужно указать регион (при сборке с этим пакетом, тормозится именно на месте, где надо указать регион).
-Первая команда запускает контейнер в интерактивном режиме, монтирует Вашу директорию к *user_folder* в контейнере, пробрасывает порты под tensorboard (6006) и сам контейнер (8888. К нему можно подключиться потом по ssh. Подробнее [здесь](https://leimao.github.io/blog/TensorBoard-On-Docker/)). 
+## Создание контейнера
+Первая команда запускает контейнер в интерактивном режиме, монтирует Вашу директорию к *user_folder* в контейнере, пробрасывает порт под tensorboard
 ```
 docker run --gpus all \
     -it --name trainer \
     --mount type=bind,source=[path_to_your_dir],target=/tensorflow/models/research/object_detection/user_folder \
-    -p 5000:8888 \
-    -p 5001:6006 \
-    hydronautics/tensorflow-gpu-object-detection
-apt install python-tk
+    -p 6006:6006 \
+    od
 ```
+## Запуск контейнера
+```
+docker start trainer
+docker attach trainer
+```
+
 ## Обучение 
 ### Структура директории *user_folder*
 ```
@@ -81,24 +168,19 @@ apt install python-tk
 ```
 1. В директорию **data** нужно поместить `label_map.pbtxt` и отредактировать его под свои объекты.
 2. Далее свои изображения поместить в **images**.
-3. В **model** помещаете скачанную с официального [репозитория](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) сетку. 
-4. В директорию **training** поместить config своей сети, взятый из папки [configs](https://github.com/vladushked/dnn_gate_detector/tree/master/configs) моего репозитория или [отсюда](https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs), но тогда пропишите такие же пути к *fine_tuned_checkpoint*, *labels_map*, *train.record* и *eval.record*.
+3. В **model** помещаете скачанную с официального [репозитория](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) сеть
+4. В директорию **training** поместить config своей сети.
+```bash
+python model_main_tf2.py --pipeline_config_path=path_to_config --model_dir=path_to_training_dir --alsologtostderr
 ```
-cd dnn_gate_detector
-git pull
-./start_training
-```
-
 Если вышли из контейнера, то посмотреть, запущен ли он, можно командой `docker ps` и войти `docker attach trainer`
 Если ничего нет, то:
-```
-docker start trainer
-docker attach trainer
-```
+
 
 ## Полезные ссылки
 
-1. Хороший туториал - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
-2. Официальный репозиторий - [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection)
-3. На хабре на русском - [Инструкция по работе с TensorFlow Object Detection API](https://habr.com/ru/company/nix/blog/422353/)
-4. На Medium - [TensorFlow Object Detection with Docker from scratch](https://towardsdatascience.com/tensorflow-object-detection-with-docker-from-scratch-5e015b639b0b)
+[How to train a custom object detection model with the Tensorflow 2 Object Detection API](https://github.com/TannerGilbert/Tensorflow-Object-Detection-API-Train-Model)
+Хороший туториал - [How To Train an Object Detection Classifier for Multiple Objects Using TensorFlow (GPU) on Windows 10](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10)
+Официальный репозиторий - [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection)
+На хабре на русском - [Инструкция по работе с TensorFlow Object Detection API](https://habr.com/ru/company/nix/blog/422353/)
+На Medium - [TensorFlow Object Detection with Docker from scratch](https://towardsdatascience.com/tensorflow-object-detection-with-docker-from-scratch-5e015b639b0b)
