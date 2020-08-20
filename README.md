@@ -166,17 +166,18 @@ docker attach trainer
         -heap of your train images
         -
         -
-+model
-    -fine tuned checkpoint of trained model
++models
+    +your model
+        -fine tuned checkpoint of trained model
+        -pipeline config file
 +training (here will be your trained model)
-    -pipeline config file
+    
 ```
 1. В директорию **data** нужно поместить `label_map.pbtxt` и отредактировать его под свои объекты.
-2. Далее свои изображения поместить в **images**.
-3. В **model** помещаете скачанную с официального [репозитория](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) сеть
-4. В директорию **training** поместить config своей сети.
+2. В **models** помещаете скачанную с официального [репозитория](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) сеть
+3. В директорию **training** поместить config своей сети.
 ```bash
-python model_main_tf2.py --pipeline_config_path=path_to_config --model_dir=path_to_training_dir --alsologtostderr
+python model_main_tf2.py --pipeline_config_path=user_folder/models/ssd_mobilenet_v2_320x320_coco17_tpu-8/ssd_mobilenet_v2_320x320_coco17_tpu-8.config --model_dir=user_folder/training --alsologtostderr
 ```
 Если вышли из контейнера, то посмотреть, запущен ли он, можно командой `docker ps` и войти `docker attach trainer`
 Если ничего нет, то:
@@ -191,6 +192,13 @@ pip3 install jupyter
 jupyter notebook --ip 0.0.0.0 --port 8000 --no-browser
 
 ```
+## Расчет метрик модели
+
+Из директории object_detection
+```bash
+python model_main_tf2.py --pipeline_config_path=user_folder/models/ssd_mobilenet_v2_320x320_coco17_tpu-8/ssd_mobilenet_v2_320x320_coco17_tpu-8.config --model_dir=user_folder/inference_graph/saved_model/ --checkpoint_dir=user_folder/inference_graph/checkpoint/ --run_once=True
+```
+
 ## Полезные ссылки
 
 [How to train a custom object detection model with the Tensorflow 2 Object Detection API](https://github.com/TannerGilbert/Tensorflow-Object-Detection-API-Train-Model)
