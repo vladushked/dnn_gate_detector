@@ -32,6 +32,7 @@ if __name__ == "__main__":
     args = vars(ap.parse_args())
     image_path = os.path.join(args["data"])
     for folder in ['train','eval']:
+        print(folder)
         print(image_path + folder)
         xml_df = xml_to_csv(image_path + folder)
         xml_df.to_csv((folder + '_labels.csv'), index=None)
