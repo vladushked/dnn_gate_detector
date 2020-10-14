@@ -183,7 +183,7 @@ python model_main_tf2.py --pipeline_config_path=user_folder/models/ssd_mobilenet
 
 ## Tensorboard
 ```bash
-tensorboard --logdir=training/train
+tensorboard --logdir=user_folder/train
 ```
 ## Запуск Jupyter Notebook
 
