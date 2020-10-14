@@ -180,8 +180,11 @@ docker attach trainer
 python model_main_tf2.py --pipeline_config_path=user_folder/models/ssd_mobilenet_v2_320x320_coco17_tpu-8/ssd_mobilenet_v2_320x320_coco17_tpu-8.config --model_dir=user_folder/training --alsologtostderr
 ```
 Если вышли из контейнера, то посмотреть, запущен ли он, можно командой `docker ps` и войти `docker attach trainer`
-Если ничего нет, то:
 
+## Tensorboard
+```bash
+tensorboard --logdir=training/train
+```
 ## Запуск Jupyter Notebook
 
 ```bash
