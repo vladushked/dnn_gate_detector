@@ -185,6 +185,13 @@ python model_main_tf2.py --pipeline_config_path=user_folder/models/ssd_mobilenet
 ```bash
 tensorboard --logdir=user_folder/train
 ```
+
+## Экспорт модели 
+
+```
+python exporter_main_v2.py --trained_checkpoint_dir training_ --output_directory graph_ --pipeline_config_path user_folder/models/ssd_mobilenet_v2_320x320_coco17_tpu-8/ssd_mobilenet_v2_320x320_coco17_tpu-8.config
+```
+
 ## Запуск Jupyter Notebook
 
 ```bash
