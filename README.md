@@ -150,6 +150,12 @@ docker start trainer
 docker attach trainer
 ```
 
+Запуск от root
+
+```
+docker exec -u root -it trainer1 /bin/bash
+```
+
 ## Обучение 
 ### Структура директории *user_folder*
 ```
